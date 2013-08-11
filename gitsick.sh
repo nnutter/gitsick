@@ -1,3 +1,5 @@
+# Source this file from your ~/.bashrc to enable Bash completions for gitsick.
+
 _gitsick_complete() {
     local CUR=${COMP_WORDS[COMP_CWORD]}
     case "$COMP_CWORD" in

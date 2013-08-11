@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# gitsick - Store your dotfiles in Git without symlinks.
+# Add this somewhere in your PATH.
+
 GITSICK=$(basename $0)
 
 usage() {
