@@ -14,13 +14,13 @@ main() {
     if [ $# -eq 0 ]; then
         set -- -h
     fi
-
     for ARG in "$@"; do
         case "$ARG" in
             -h|--help) usage; exit ;;
         esac
     done
 
+    # for debugging
     if [ "$1" == "--work-tree" ]; then
         GIT_WORK_TREE="$2";
         shift;
