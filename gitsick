@@ -98,9 +98,9 @@ repo_cmd() {
 
     if [ "$1" == "status" ]; then
         shift
-        git status --untracked-files=no "$@"
+        git --git-dir=$REPO_DIR status --untracked-files=no "$@"
     else
-        git --git-dir="$REPO_DIR" "$@"
+        git --git-dir=$REPO_DIR "$@"
     fi
 }
 
