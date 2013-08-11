@@ -34,7 +34,7 @@ main() {
     local REPO="$1"
     shift
 
-    init_repo_dir "$REPO"
+    init_git_dir "$REPO"
 
     command="$1"
     shift
@@ -70,14 +70,14 @@ init_gitsick_dir() {
     fi
 }
 
-init_repo_dir() {
+init_git_dir() {
     local REPO="$1"
-    REPO_DIR="$GITSICK_DIR/$REPO.git"
+    GIT_DIR="$GITSICK_DIR/$REPO.git"
 }
 
 git_init() {
-    git init --separate-git-dir "$REPO_DIR" "$GIT_WORK_TREE" "$@"
-    git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
+    git init --separate-git-dir "$GIT_DIR" "$GIT_WORK_TREE" "$@"
+    git config --file "$GIT_DIR"/config core.worktree $GIT_WORK_TREE
     if [ -f "$GIT_WORK_TREE/.git" ]; then
         rm "$GIT_WORK_TREE/.git"
     fi
@@ -85,22 +85,22 @@ git_init() {
 
 git_clone() {
     local CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)"
-    git clone --no-checkout --separate-git-dir "$REPO_DIR" "$@" "$CLONE_DIR"
-    git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
+    git clone --no-checkout --separate-git-dir "$GIT_DIR" "$@" "$CLONE_DIR"
+    git config --file "$GIT_DIR"/config core.worktree $GIT_WORK_TREE
     rm "$CLONE_DIR"/.git
     rmdir "$CLONE_DIR"
 }
 
 git_cmd() {
-    if [ ! -d "$REPO_DIR" ]; then
-        die "ERROR: No $GITSICK repo found: $REPO_DIR"
+    if [ ! -d "$GIT_DIR" ]; then
+        die "ERROR: No $GITSICK repo found: $GIT_DIR"
     fi
 
     if [ "$1" == "status" ]; then
         shift
-        git --git-dir=$REPO_DIR status --untracked-files=no "$@"
+        git --git-dir=$GIT_DIR status --untracked-files=no "$@"
     else
-        git --git-dir=$REPO_DIR "$@"
+        git --git-dir=$GIT_DIR "$@"
     fi
 }
 
