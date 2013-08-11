@@ -1,0 +1,106 @@
+#!/bin/bash
+
+GITSICK=$(basename $0)
+
+usage() {
+    echo -n "\
+$GITSICK init ...
+$GITSICK clone <repo> ...
+$GITSICK <repo> ...
+"
+}
+
+main() {
+    if [ $# -eq 0 ]; then
+        set -- -h
+    fi
+
+    case "$1" in
+        -h|--help) usage; exit ;;
+        --work-tree) GIT_WORK_TREE="$1"; shift ;;
+    esac
+
+    init_git_work_tree
+
+    set -o nounset
+
+    command="$1"
+    shift
+    case "$command" in
+        init) repo_init "$@" ;;
+        clone) repo_clone "$@" ;;
+        *) repo_cmd "$command" "$@" ;;
+    esac
+}
+
+init_git_work_tree() {
+    if [ -z "$GIT_WORK_TREE" ]; then
+        GIT_WORK_TREE="$HOME"
+    fi
+
+    if [ -e "$GIT_WORK_TREE/.git" ]; then
+        die "ERROR: GIT_WORK_TREE looks like a Git repository!"
+    fi
+}
+
+init_gitsick_dir() {
+    GITSICK_DIR="$(git config --global gitsick.dir || true)"
+    if [ -z "$GITSICK_DIR" ]; then
+        GITSICK_DIR="$HOME/.gitsick"
+    fi
+    if [ ! -d "$GITSICK_DIR" ]; then
+        mkdir "$GITSICK_DIR"
+    fi
+}
+
+init_repo_dir() {
+    local REPO="$1"
+    REPO_DIR="$GITSICK_DIR/$REPO.git"
+}
+
+repo_init() {
+    local REPO="$1"
+    shift
+
+    init_repo_dir "$REPO"
+    git init --separate-git-dir "$REPO_DIR" "$GIT_WORK_TREE" "$@"
+    git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
+    if [ -f "$GIT_WORK_TREE/.git" ]; then
+        rm "$GIT_WORK_TREE/.git"
+    fi
+}
+
+repo_clone() {
+    local REPO="$1"
+    shift
+
+    init_repo_dir "$REPO"
+    local CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)"
+    git clone --no-checkout --separate-git-dir "$REPO_DIR" "$@" "$CLONE_DIR"
+    git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
+    rm "$CLONE_DIR"/.git
+    rmdir "$CLONE_DIR"
+}
+
+repo_cmd() {
+    local REPO="$1"
+    shift
+
+    init_repo_dir "$REPO"
+    if [ ! -d "$REPO_DIR" ]; then
+        die "ERROR: No $GITSICK repo found: $REPO"
+    fi
+
+    if [ "$1" == "status" ]; then
+        shift
+        git status --untracked-files=no "$@"
+    else
+        git --git-dir="$REPO_DIR" "$@"
+    fi
+}
+
+set -o errexit
+set -o pipefail
+
+init_gitsick_dir
+main "$@"
