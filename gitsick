@@ -33,6 +33,11 @@ main() {
     esac
 }
 
+die() {
+    echo >&2 "$*"
+    exit 1
+}
+
 init_git_work_tree() {
     if [ -z "$GIT_WORK_TREE" ]; then
         GIT_WORK_TREE="$HOME"
