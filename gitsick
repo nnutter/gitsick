@@ -98,9 +98,10 @@ git_cmd() {
 
     if [ "$1" == "status" ]; then
         shift
-        git --git-dir=$GIT_DIR status --untracked-files=no "$@"
+        git --git-dir=$GIT_DIR --work-tree=$GIT_WORK_TREE \
+            status --untracked-files=no "$@"
     else
-        git --git-dir=$GIT_DIR "$@"
+        git --git-dir=$GIT_DIR --work-tree=$GIT_WORK_TREE "$@"
     fi
 }
 
