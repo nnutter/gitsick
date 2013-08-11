@@ -4,8 +4,8 @@ GITSICK=$(basename $0)
 
 usage() {
     echo -n "\
-$GITSICK init <name>
-$GITSICK clone <name> <repository>
+$GITSICK <name> init
+$GITSICK <name> clone <repository>
 $GITSICK <name> ...
 "
 }
@@ -30,6 +30,11 @@ main() {
     init_git_work_tree
 
     set -o nounset
+
+    local REPO="$1"
+    shift
+
+    init_repo_dir "$REPO"
 
     command="$1"
     shift
@@ -71,10 +76,6 @@ init_repo_dir() {
 }
 
 repo_init() {
-    local REPO="$1"
-    shift
-
-    init_repo_dir "$REPO"
     git init --separate-git-dir "$REPO_DIR" "$GIT_WORK_TREE" "$@"
     git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
     if [ -f "$GIT_WORK_TREE/.git" ]; then
@@ -83,10 +84,6 @@ repo_init() {
 }
 
 repo_clone() {
-    local REPO="$1"
-    shift
-
-    init_repo_dir "$REPO"
     local CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)"
     git clone --no-checkout --separate-git-dir "$REPO_DIR" "$@" "$CLONE_DIR"
     git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
@@ -95,10 +92,6 @@ repo_clone() {
 }
 
 repo_cmd() {
-    local REPO="$1"
-    shift
-
-    init_repo_dir "$REPO"
     if [ ! -d "$REPO_DIR" ]; then
         die "ERROR: No $GITSICK repo found: $REPO"
     fi
