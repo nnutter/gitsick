@@ -38,7 +38,7 @@ a name.
 performance.  You should be able to create a `.gitignore` files if you want to
 see untracked files.  You will also need to add `-u` to your `status` command.
 
-## Migrating From `homesick` or `homehick`
+## Migrating From `homesick` or `homeshick`
 
 Create a new repo with `gitsick`:
 
