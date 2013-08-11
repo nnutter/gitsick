@@ -84,7 +84,13 @@ git_init() {
 }
 
 git_clone() {
-    local CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)"
+    local CLONE_DIR
+    OS="$(uname -s)"
+    case "$OS" in
+        Linux) CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)" ;;
+        Darwin) CLONE_DIR="$(mktemp -d -t $GITSICK)" ;;
+        *) die "ERROR: Unknown OS: $OS" ;;
+    esac
     git clone --no-checkout --separate-git-dir "$GIT_DIR" "$@" "$CLONE_DIR"
     git config --file "$GIT_DIR"/config core.worktree $GIT_WORK_TREE
     rm "$CLONE_DIR"/.git
