@@ -93,7 +93,7 @@ git_clone() {
 
 git_cmd() {
     if [ ! -d "$REPO_DIR" ]; then
-        die "ERROR: No $GITSICK repo found: $REPO"
+        die "ERROR: No $GITSICK repo found: $REPO_DIR"
     fi
 
     if [ "$1" == "status" ]; then
