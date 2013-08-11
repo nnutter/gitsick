@@ -31,10 +31,10 @@ main() {
 
     set -o nounset
 
-    local REPO="$1"
+    local NAME="$1"
     shift
 
-    init_git_dir "$REPO"
+    init_git_dir "$NAME"
 
     command="$1"
     shift
@@ -71,8 +71,8 @@ init_gitsick_dir() {
 }
 
 init_git_dir() {
-    local REPO="$1"
-    GIT_DIR="$GITSICK_DIR/$REPO.git"
+    local NAME="$1"
+    GIT_DIR="$GITSICK_DIR/$NAME.git"
 }
 
 git_init() {
