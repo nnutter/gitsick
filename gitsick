@@ -39,9 +39,9 @@ main() {
     command="$1"
     shift
     case "$command" in
-        init) repo_init "$@" ;;
-        clone) repo_clone "$@" ;;
-        *) repo_cmd "$command" "$@" ;;
+        init) git_init "$@" ;;
+        clone) git_clone "$@" ;;
+        *) git_cmd "$command" "$@" ;;
     esac
 }
 
@@ -75,7 +75,7 @@ init_repo_dir() {
     REPO_DIR="$GITSICK_DIR/$REPO.git"
 }
 
-repo_init() {
+git_init() {
     git init --separate-git-dir "$REPO_DIR" "$GIT_WORK_TREE" "$@"
     git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
     if [ -f "$GIT_WORK_TREE/.git" ]; then
@@ -83,7 +83,7 @@ repo_init() {
     fi
 }
 
-repo_clone() {
+git_clone() {
     local CLONE_DIR="$(mktemp --tmpdir --directory $GITSICK.XXX)"
     git clone --no-checkout --separate-git-dir "$REPO_DIR" "$@" "$CLONE_DIR"
     git config --file "$REPO_DIR"/config core.worktree $GIT_WORK_TREE
@@ -91,7 +91,7 @@ repo_clone() {
     rmdir "$CLONE_DIR"
 }
 
-repo_cmd() {
+git_cmd() {
     if [ ! -d "$REPO_DIR" ]; then
         die "ERROR: No $GITSICK repo found: $REPO"
     fi
