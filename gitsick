@@ -15,10 +15,17 @@ main() {
         set -- -h
     fi
 
-    case "$1" in
-        -h|--help) usage; exit ;;
-        --work-tree) GIT_WORK_TREE="$2"; shift; shift ;;
-    esac
+    for ARG in "$@"; do
+        case "$ARG" in
+            -h|--help) usage; exit ;;
+        esac
+    done
+
+    if [ "$1" == "--work-tree" ]; then
+        GIT_WORK_TREE="$2";
+        shift;
+        shift;
+    fi
 
     init_git_work_tree
 
