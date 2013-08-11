@@ -17,7 +17,7 @@ main() {
 
     case "$1" in
         -h|--help) usage; exit ;;
-        --work-tree) GIT_WORK_TREE="$1"; shift ;;
+        --work-tree) GIT_WORK_TREE="$2"; shift; shift ;;
     esac
 
     init_git_work_tree
