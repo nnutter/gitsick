@@ -23,13 +23,6 @@ main() {
         esac
     done
 
-    # for debugging
-    if [ "$1" == "--work-tree" ]; then
-        GIT_WORK_TREE="$2";
-        shift;
-        shift;
-    fi
-
     init_git_work_tree
 
     set -o nounset
