@@ -1,21 +1,22 @@
 # Source this file from your ~/.bashrc to enable Bash completions for gitsick.
 
 _gitsick_complete() {
-    local CUR=${COMP_WORDS[COMP_CWORD]}
-    case "$COMP_CWORD" in
-        1) # names
-            GITSICK_DIR="$(git config --global gitsick.dir || true)"
-            if [ -z "$GITSICK_DIR" ]; then
-                GITSICK_DIR="$HOME/.gitsick"
-            fi
-            NAMES="$(\ls "$GITSICK_DIR" | sed 's/\.git$//')"
-            COMPREPLY=( $(compgen -W "$NAMES" -- $CUR) )
-            ;;
-        2) # commands
-            COMMANDS="add checkout clone init reset rm"
-            COMPREPLY=( $(compgen -W "$COMMANDS" -- $CUR) )
-            ;;
-        *)
-    esac
+    # first argument is a gitsick repo otherwise delegate to git's contrib completion
+    if test "$COMP_CWORD" = 1
+    then
+        GITSICK_DIR="$(git config --global gitsick.dir || true)"
+        if [ -z "$GITSICK_DIR" ]; then
+            GITSICK_DIR="$HOME/.gitsick"
+        fi
+        NAMES="$(command ls "$GITSICK_DIR" | command sed 's/\.git$//')"
+        COMPREPLY=( $(compgen -W "$NAMES" -- ${COMP_WORDS[COMP_CWORD]}) )
+        COMPREPLY="$COMPREPLY "
+    else
+        ((COMP_CWORD--))
+        COMP_WORDS=("${COMP_WORDS[@]:1}")
+        _git
+    fi
 }
-complete -o bashdefault -o default -F _gitsick_complete gitsick
+
+complete -o bashdefault -o default -o nospace -F _gitsick_complete gitsick 2>/dev/null \
+    || complete -o default -o nospace -F _gitsick_complete gitsick
