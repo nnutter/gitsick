@@ -93,10 +93,14 @@ init_git_work_tree() {
 }
 
 init_gitsick_dir() {
-    GITSICK_DIR="$(git config --global gitsick.dir || true)"
+    if [ -z "$GITSICK_DIR" ]; then
+        GITSICK_DIR="$(git config --global gitsick.dir)"
+    fi
+
     if [ -z "$GITSICK_DIR" ]; then
         GITSICK_DIR="$HOME/.gitsick"
     fi
+
     if [ ! -d "$GITSICK_DIR" ]; then
         mkdir "$GITSICK_DIR"
     fi
