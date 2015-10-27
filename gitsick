@@ -105,7 +105,6 @@ init_git_dir() {
 
 git_init() {
     git init --separate-git-dir "$GIT_DIR" "$GIT_WORK_TREE" "$@"
-    git config --file "$GIT_DIR"/config core.worktree $GIT_WORK_TREE
     if [ -f "$GIT_WORK_TREE/.git" ]; then
         rm "$GIT_WORK_TREE/.git"
     fi
