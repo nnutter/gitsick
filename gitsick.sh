@@ -10,12 +10,21 @@ _gitsick_complete() {
         fi
         NAMES="$(command ls "$GITSICK_DIR" | command sed 's/\.git$//') init clone"
         COMPREPLY=( $(compgen -W "$NAMES" -- ${COMP_WORDS[COMP_CWORD]}) )
-        COMPREPLY="$COMPREPLY "
-    else
-        ((COMP_CWORD--))
-        COMP_WORDS=("${COMP_WORDS[@]:1}")
-        _git
+        if test -n "$COMPREPLY"
+        then
+            COMPREPLY="$COMPREPLY "
+        fi
+        return
     fi
+
+    if test "${COMP_WORDS[1]}" = "init" -o "${COMP_WORDS[1]}" = "clone"
+    then
+        return
+    fi
+
+    ((COMP_CWORD--))
+    COMP_WORDS=("${COMP_WORDS[@]:1}")
+    _git
 }
 
 complete -o bashdefault -o default -o nospace -F _gitsick_complete gitsick 2>/dev/null \
