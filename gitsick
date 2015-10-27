@@ -79,7 +79,7 @@ init_git_work_tree() {
 
 init_gitsick_dir() {
     if [ -z "$GITSICK_DIR" ]; then
-        GITSICK_DIR="$(git config --global gitsick.dir)"
+        GITSICK_DIR="$(git config --global gitsick.dir || true)"
     fi
 
     if [ -z "$GITSICK_DIR" ]; then
