@@ -7,9 +7,15 @@ GITSICK=$(basename $0)
 
 usage() {
     echo -n "\
+$GITSICK init [NAME]
+$GITSICK clone <name> <url>
+$GITSICK <name> <subcommand>
+
+    For legacy support init and clone are intercepted subcommands are
+intercepted for compatibility with gitsick:
+
 $GITSICK <name> init
 $GITSICK <name> clone <repository>
-$GITSICK <name> ...
 "
 }
 
@@ -33,6 +39,25 @@ main() {
     init_git_work_tree
 
     set -o nounset
+
+    case "$1" in
+        init)
+            shift
+            local NAME="$1"
+            shift
+            init_git_dir "$NAME"
+            git_init "$@"
+            exit $?
+            ;;
+        clone)
+            shift
+            local NAME="$1"
+            shift
+            init_git_dir "$NAME"
+            git_clone "$@"
+            exit $?
+            ;;
+    esac
 
     local NAME="$1"
     shift

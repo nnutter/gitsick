@@ -8,7 +8,7 @@ _gitsick_complete() {
         if [ -z "$GITSICK_DIR" ]; then
             GITSICK_DIR="$HOME/.gitsick"
         fi
-        NAMES="$(command ls "$GITSICK_DIR" | command sed 's/\.git$//')"
+        NAMES="$(command ls "$GITSICK_DIR" | command sed 's/\.git$//') init clone"
         COMPREPLY=( $(compgen -W "$NAMES" -- ${COMP_WORDS[COMP_CWORD]}) )
         COMPREPLY="$COMPREPLY "
     else
