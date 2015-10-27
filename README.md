@@ -24,11 +24,11 @@ The default is `$HOME/.gitsick`.
 
 ## Synopsis
 
-    gitsick <name> init
-    gitsick <name> clone <repository>
-    gitsick <name> ...
+    gitsick init [NAME]
+    gitsick clone <name> <url>
+    gitsick <name> <subcommand>
 
-For now, `gitsick` is mostly just a wrapper around `git`.
+`gitsick` is mostly just a wrapper around `git`.
 
 `clone` and `init` have different syntax due to the fact that they both allow
 you to specify a target directory but with `gitsick` you would just specify
