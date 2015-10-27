@@ -80,6 +80,10 @@ die() {
 
 init_git_work_tree() {
     if [ -z "$GIT_WORK_TREE" ]; then
+        GIT_WORK_TREE="$GITSICK_HOME"
+    fi
+
+    if [ -z "$GIT_WORK_TREE" ]; then
         GIT_WORK_TREE="$HOME"
     fi
 
